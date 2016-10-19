@@ -20,14 +20,16 @@ time.sleep(0.5)
 try:
     os.kill(p.pid, 0)
     p.kill()
-    print ("Forced kill...\n")
+    print ("tcpdump: forced kill...\n")
 except OSError, e:
-    print "Properly terminated...\n"
+    print "tcpdump: terminated...\n"
 
 
+# Start tshark (convert .pcap to .json)
+# Command >> tshark -r cap.pcap -Tjson > cap.json
+tsharkCommand = ['tshark','-r', 'cap.pcap', '-Tjson']
+tsharkOutput = open("cap.json", "wb")
+p = subprocess.Popen(tsharkCommand, stdout=tsharkOutput)
 
-
-
-# TODO: 3. Start tshark (convert .pcap to .json)
 
 # TODO: 4. Analytics
