@@ -52,8 +52,9 @@ with open('cap.json') as json_data:
     # Filter IP packs with QoS:
     #   - Src IP
     #   - Dst IP
+    #   - Frame number
+    #   - Valid frame number (IP pkg)
     #   - QoS value
-    #   - package ID
     iterator = 1
     dict_filter_1 = []
     for item in dict:
@@ -94,7 +95,6 @@ f.write("PKG_ID\t\tIP_PKG_ID\tSRC_IP\t\tDST_IP\t\tQoS MARK \n")
 for item in dict_filter_2:
     if (item['IP_SRC'] == src_ip and item['IP_DST'] == dst_ip) or \
             (item['IP_SRC'] == dst_ip and item['IP_DST'] == src_ip):
-        #print "{0: <10}{1: <12}{2: <16}{3: <16}{4: <16}".format(
         if item['QOS'] == '5':
             qos_mark = 'QoS (Video): {0}'.format(item['QOS'])
         elif item['QOS'] == '4':
@@ -113,3 +113,5 @@ for item in dict_filter_2:
             item['IP_DST'],
             qos_mark
         ))
+
+f.close()
