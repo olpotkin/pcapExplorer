@@ -1,0 +1,11 @@
+[
+  {
+    "src_ip": "10.40.52.21",
+    "dst_ip": "10.40.52.33",
+    "src_wifi_addr": "c8:f6:50:ce:8a:81",
+    "dst_wifi_addr": "c8:f6:50:ce:8a:81",
+    "cap_time": "60",
+    "proc_time": "30",
+    "appstore_link": "#"
+  }
+]

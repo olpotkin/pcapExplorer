@@ -3,47 +3,82 @@
 # olpotkin@gmail.com #
 ######################
 
+
 import os
 import subprocess
 import time
 import json
+import webbrowser
+
+from reporting import Reporting
 
 # Start tcpdump
 # Command >> tcpdump -I -i en1 -w ~/Desktop/output.pcap
+time.sleep(0.5)
+print("\n==============================")
+print("| Fastlane Test for iOS 10+ app |")
+print("==============================\n")
 
-p = subprocess.Popen(['tcpdump', "-I", "-i", "en1",
+# Apply settings
+with open('config.json') as jsonConfig:
+    configDict = json.load(jsonConfig)
+    for item in configDict:
+        try:
+            d = {
+                'src_ip': str(item["src_ip"]),
+                'dst_ip': str(item["dst_ip"]),
+                'cap_time': str(item["cap_time"]),
+                'proc_time': str(item["proc_time"]),
+                'appstore_link': str(item["appstore_link"])
+            }
+            configDict = []
+            configDict.append(d)
+        except:
+            continue
+
+print("1-st device IP: {0}".format(configDict[0]['src_ip']))
+print("2-nd device IP: {0}".format(configDict[0]['dst_ip']))
+print("Capturing time: {0}".format(int(configDict[0]['cap_time'])))
+print("Processing time: {0}".format(int(configDict[0]['proc_time'])))
+print("Load configuration: done\n")
+
+# Capturing process
+print("Capturing...\n")
+p = subprocess.Popen(['tcpdump', "-I", "-i", "en0",
                       '-w', 'cap.pcap'], stdout=subprocess.PIPE, shell=False)
-time.sleep(60)      # Capturing traffic for N seconds
-p.terminate()       # Stop tcpdump
-time.sleep(5)
+time.sleep(int(configDict[0]['cap_time']))  # Capturing traffic for N seconds
+p.terminate()                               # Stop tcpdump
+time.sleep(2)
 
 # Check if the subprocess has terminated
-# If not - force kill
-
+# if not - force kill
 try:
     os.kill(p.pid, 0)
     p.kill()
-    print ("tcpdump: forced kill...\n")
+    print("\nCapturing: done\n")            # Force killed
 except OSError, e:
-    print "tcpdump: terminated...\n"
-
+    print("\nCapturing: done\n")
 
 # Start tshark (convert .pcap to .json)
 # Command >> tshark -r cap.pcap -Tjson > cap.json
-
 tsharkCommand = ['tshark','-r', 'cap.pcap', '-Tjson',
                  '-e', 'frame.number',
-                 '-e', 'wlan_radio.channel',
+                 #'-e', 'wlan_radio.channel',
                  '-e', 'wlan.qos',
                  '-e', 'wlan.qos.priority',
-                 '-e', 'ip.version',
+                 #'-e', 'ip.version',
                  '-e', 'ip.src',
                  '-e', 'ip.dst',
-                 '-e', 'data.len']
+                 '-e', 'data.len',
+                 '-e', 'ip.dsfield.dscp',
+                 '-e', 'ip.len']
 
 tsharkOutput = open("cap.json", "wb")
 p = subprocess.Popen(tsharkCommand, stdout=tsharkOutput)
-time.sleep(15)
+
+print "Start processing: done\n"
+print "Processing...\n"
+time.sleep(int(configDict[0]['proc_time']))
 
 # Analytics
 # Open json
@@ -54,6 +89,7 @@ with open('cap.json') as json_data:
     #   - Dst IP
     #   - Frame number
     #   - Valid frame number (IP pkg)
+    #   - DSCP value
     #   - QoS value
     iterator = 1
     dict_filter_1 = []
@@ -64,7 +100,10 @@ with open('cap.json') as json_data:
                 'ip.dst': item["_source"]["layers"]["ip.dst"],
                 'frame.number': item["_source"]["layers"]["frame.number"],
                 'valid_frame.number': iterator,
-                'wlan.qos.priority': item["_source"]["layers"]["wlan.qos.priority"]
+                'ip.dsfield.dscp': item["_source"]["layers"]["ip.dsfield.dscp"],
+                'wlan.qos.priority': item["_source"]["layers"]["wlan.qos.priority"],
+                'ip.len': item["_source"]["layers"]["ip.len"]
+
             }
             dict_filter_1.append(d)
             iterator += 1
@@ -72,46 +111,26 @@ with open('cap.json') as json_data:
             continue
 
 # filter data for processing (delete elements: [], 'u)
-dict_filter_2 = []
+captureFilteredDict = []
 for item in dict_filter_1:
     d = {
-        'VALID_FRAME_N': str(item["valid_frame.number"]),
-        'FRAME_N': str(item["frame.number"][0]),
+        'VALID_FRAME_N': str(item["valid_frame.number"]),       # IP Package
+        'FRAME_N': str(item["frame.number"][0]),                # Frame
         'IP_SRC': str(item["ip.src"]),
         'IP_DST': str(item["ip.dst"][0]),
-        'QOS': str(item["wlan.qos.priority"][0])
+        'IP_DSCP': str(item["ip.dsfield.dscp"][0]),
+        'QOS': str(item["wlan.qos.priority"][0]),
+        'IP_LEN': str(item["ip.len"][0])
     }
-    dict_filter_2.append(d)
+    captureFilteredDict.append(d)
 
-# 3. Filter by IPs (srs->dst, dst->src)
-src_ip = '10.10.20.44'
-dst_ip = '10.10.20.47'
+# Reporting: Create report file
+flReport = Reporting("report.html", configDict, captureFilteredDict)
+flReport.doReport()                                 # Generate report
 
+print("Report created. Opening in browser...\n")
+time.sleep(0.5)
 
-# 4. Show results
-f = open('report.txt', 'w')
-
-f.write("PKG_ID\t\tIP_PKG_ID\tSRC_IP\t\tDST_IP\t\tQoS MARK \n")
-for item in dict_filter_2:
-    if (item['IP_SRC'] == src_ip and item['IP_DST'] == dst_ip) or \
-            (item['IP_SRC'] == dst_ip and item['IP_DST'] == src_ip):
-        if item['QOS'] == '5':
-            qos_mark = 'QoS (Video): {0}'.format(item['QOS'])
-        elif item['QOS'] == '4':
-            qos_mark = 'QoS (Video): {0}'.format(item['QOS'])
-        elif item['QOS'] == '6':
-            qos_mark = 'QoS (Voice): {0}'.format(item['QOS'])
-        elif item['QOS'] == '0':
-            qos_mark = 'Best effort: {0}'.format(item['QOS'])
-        else:
-            qos_mark = 'QoS: {0}'.format(item['QOS'])
-
-        f.write("{0: <10}\t{1: <10}\t{2: <14}{3: <14}{4: <14}\n".format(
-            item['FRAME_N'],
-            item['VALID_FRAME_N'],
-            item['IP_SRC'],
-            item['IP_DST'],
-            qos_mark
-        ))
-
-f.close()
+new = 2                                             # Open in a new tab, if possible
+url = "file://" + os.path.realpath("report.html")   # URL to report file
+webbrowser.open(url, new=new)                       # Open report in web-rowser
