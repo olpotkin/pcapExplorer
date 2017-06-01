@@ -172,7 +172,7 @@ class Reporting:
         repOpenBody += "<a href=\"{0}\"><p class=\"header-1\">{1}</p></a><br>".format(
             self.config[0]['appstore_link'],
             self.appParameters[0])
-        repOpenBody += "<p class=\"header-2\">Cisco-Apple Fastlane compatibility test</p>"
+        repOpenBody += "<p class=\"header-2\">Traffic capturing filter</p>"
         repOpenBody += "</div>"
 
         repOpenBody += "</div>"
@@ -380,7 +380,7 @@ class Reporting:
 
         #search_name = re.search('<h1 itemprop=\"name\">(.*)</h1>', html)
         #UDP Client (FastLane workshop)
-        search_name = "UDP Client (FastLane workshop)"
+        search_name = "UDP Client"
         #self.appParameters.append(search_name.group(1))
         self.appParameters.append(search_name)
 
