@@ -1,12 +1,14 @@
 
-
 # Traffic capturing and analysis filter
-
----
 
 [image1]: ./imgs/cap-report-example.png
 
-Required Wireshark/tshark on your capturing device.
+Setup:
+
+* Update OS (Install latest version of macOS)
+* Install Wireshark (latest version)
+* Open project (e.g. in PyCharm), check all dependencies (python 2.7)
+* Config testing script by adding parameters to config.json file
 
 ## Instruction:
 
