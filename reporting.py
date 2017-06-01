@@ -1,7 +1,7 @@
-#####################
-# Oleg Potkin       #
-# opotkin@cisco.com #
-#####################
+######################
+# Oleg Potkin        #
+# olpotkin@gmail.com #
+######################
 import urllib2
 import re
 
@@ -242,12 +242,13 @@ class Reporting:
         repBodySum += "</div>"
         repBodySum += "</div>"
 
-#repBodySum += "<div class=\"row\">"
-#repBodySum += "<div class=\"col-md-10\" style=\"margin-left: 50px\">"
-#repBodySum += "<a href=\"#\" class=\"btn btn-primary open-btn\" role=\"button\">Open .pcap</a>"
-#repBodySum += "<a href=\"#\" class=\"btn btn-primary open-btn\" role=\"button\">Open .json</a>"
-#repBodySum += "</div>"
-#repBodySum += "</div>"
+        repBodySum += "<div class=\"row\">"
+        repBodySum += "<div class=\"col-md-10\" style=\"margin-left: 50px\">"
+        repBodySum += "<a href=\"#\" class=\"btn btn-primary open-btn\" role=\"button\">Open .pcap</a>"
+        repBodySum += "<a href=\"#\" class=\"btn btn-primary open-btn\" role=\"button\">Open .json</a>"
+        repBodySum += "</div>"
+        repBodySum += "</div>"
+
         repBodySum += "</div>"
         repBodySum += "</div>"
         repBodySum += "</div>"
