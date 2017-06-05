@@ -91,6 +91,7 @@ with open('cap.json') as json_data:
     #   - Valid frame number (IP pkg)
     #   - DSCP value
     #   - QoS value
+    #   - ip packet length
     iterator = 1
     dict_filter_1 = []
     for item in dict:
@@ -103,14 +104,13 @@ with open('cap.json') as json_data:
                 'ip.dsfield.dscp': item["_source"]["layers"]["ip.dsfield.dscp"],
                 'wlan.qos.priority': item["_source"]["layers"]["wlan.qos.priority"],
                 'ip.len': item["_source"]["layers"]["ip.len"]
-
             }
             dict_filter_1.append(d)
             iterator += 1
         except:
             continue
 
-# filter data for processing (delete elements: [], 'u)
+# Filter data for processing (delete elements: [], 'u)
 captureFilteredDict = []
 for item in dict_filter_1:
     d = {
@@ -133,4 +133,4 @@ time.sleep(0.5)
 
 new = 2                                             # Open in a new tab, if possible
 url = "file://" + os.path.realpath("report.html")   # URL to report file
-webbrowser.open(url, new=new)                       # Open report in web-rowser
+webbrowser.open(url, new=new)                       # Open report in web-browser
