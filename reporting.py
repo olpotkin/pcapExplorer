@@ -369,22 +369,22 @@ class Reporting:
 # - app Icon (address)
 # - app Description - optional
     def retrieveItunes(self):
-        #opener = urllib2.build_opener()
-        #try:
-        #    response = opener.open(self.config[0]['appstore_link'])
-        #    html = response.read()
-        #except:
-        #    self.appParameters.append("App Title")
-        #    self.appParameters.append("#")
-        #    return
+        opener = urllib2.build_opener()
+        try:
+            response = opener.open(self.config[0]['appstore_link'])
+            html = response.read()
+        except:
+            self.appParameters.append("App Title")
+            self.appParameters.append("#")
+            return
 
-        #search_name = re.search('<h1 itemprop=\"name\">(.*)</h1>', html)
+        search_name = re.search('<h1 itemprop=\"name\">(.*)</h1>', html)
         #UDP Client (FastLane workshop)
         search_name = "UDP Client"
-        #self.appParameters.append(search_name.group(1))
+        self.appParameters.append(search_name.group(1))
         self.appParameters.append(search_name)
 
-        #search_icon = re.search('<meta itemprop=\"image\" content=\"(.*)\"></meta>', html)
+        search_icon = re.search('<meta itemprop=\"image\" content=\"(.*)\"></meta>', html)
         search_icon = "Content/empty.png"
-        #self.appParameters.append(search_icon.group(1))
+        self.appParameters.append(search_icon.group(1))
         self.appParameters.append(search_icon)
