@@ -135,7 +135,6 @@ class Reporting:
         repHeader += "</head>\n"
         return repHeader
 
-
     def doBody(self):
         # Report includes:
         # 1. Package number (from .pcap)
@@ -205,9 +204,7 @@ class Reporting:
         repOpenBody += "</div>"
 
         # doBodySum()
-
         return repOpenBody
-
 
     def doBodySum(self):
         # Add summary calculations
@@ -254,7 +251,6 @@ class Reporting:
         repBodySum += "</div>"
 
         return repBodySum
-
 
     def doBodyDetails(self):
 
