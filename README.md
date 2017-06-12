@@ -5,14 +5,14 @@
 
 Setup:
 
-* Update OS (Install latest version of macOS)
+* Update macOS (Install the latest version of macOS)
 * Install Wireshark (latest version)
 * Open project (e.g. in PyCharm), check all dependencies (python 2.7)
 * Config testing script by adding parameters to config.json file
 
 ## Instruction:
 
-1. Set source and destination IP in `config.json`.
+1. Set source IP,destination IP, link to App Store (set "#" if not available)  in `config.json`.
 
 2. Run Termilal and use command: `python main.py`
 
