@@ -12,7 +12,7 @@ Setup:
 
 ## Instruction:
 
-1. Set source IP,destination IP, link to App Store (set "#" if not available)  in `config.json`.
+1. Set 'source IP', 'destination IP', 'link to the App Store' (set "#" if not available)  in `config.json`.
 
 2. Run Termilal and use command: `python main.py`
 
